@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey List</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        #surveyList {
+            list-style-type: none;
+            padding: 0;
+        }
+        .surveyItem {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .surveyItem a {
+            color: #333;
+            text-decoration: none;
+        }
+        .surveyItem a:hover {
+            text-decoration: underline;
+        }
+        .addSurveyButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .addSurveyButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>설문조사 목록</h2>
+
+    <ul id="surveyList">
+        <!-- 여기에 설문조사 목록이 동적으로 추가될 것입니다. -->
+    </ul>
+
+    <button class="addSurveyButton" onclick="index()">게시판으로 이동</button>
+</div>
+
+<script>
+    // 로컬 스토리지에서 설문조사 목록을 가져와서 보여주는 함수
+    function displaySurveys() {
+        var surveys = JSON.parse(localStorage.getItem("surveys")) || [];
+        var listContainer = document.getElementById("surveyList");
+
+        // 설문조사 목록을 동적으로 생성하여 보여줍니다.
+        surveys.forEach(function(survey) {
+            var listItem = document.createElement("li");
+            listItem.className = "surveyItem";
+            listItem.innerHTML = "<a href='survey.html'>" + survey.title + "</a>";
+
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    // 페이지 로드 시 설문조사 목록을 보여줍니다.
+    window.onload = function() {
+        displaySurveys();
+    };
+
+    function index() {
+        window.location.href = "list.html";
+    } 
+</script>
+
+</body>
+</html>

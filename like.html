@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현승이가 키스해줌</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h3 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .like-dislike {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .stats {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        /* 좋아요 수 텍스트를 빨간색으로 변경 */
+        #likes {
+            color: red;
+            margin-right: 5px;
+        }
+        /* 하트 아이콘을 빨간색으로 변경 */
+        #likes::before {
+            content: '♥';
+        }
+        /* 좋아요 버튼 스타일 */
+        .like-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .like-button:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        .like-button:disabled {
+            background-color: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>축하합니다!</h3>
+    <h2>현승이 키스권에 당첨되셨습니다!!!</h2>
+    <div class="like-dislike" id="likeDislike">
+        <button onclick="toggleLike()" id="likeButton" class="like-button">좋아요</button>
+    </div>
+    <div class="stats">
+        <span id="likes">0</span>명이 좋아합니다.
+    </div>
+</div>
+
+<script>
+    var likes = localStorage.getItem("likes") || 0; // 로컬 스토리지에서 좋아요 수를 가져옴
+
+    document.getElementById("likes").textContent = likes; // 페이지 로드 시 좋아요 수를 업데이트
+
+    var liked = localStorage.getItem("liked") === "true";
+
+    if (liked) {
+        document.getElementById("likeButton").textContent = "좋아요 취소";
+    }
+
+    function toggleLike() {
+        var likeButton = document.getElementById("likeButton");
+        if (liked) {
+            likes--;
+            document.getElementById("likes").textContent = likes; // 좋아요 취소 시 좋아요 수를 업데이트
+            likeButton.textContent = "좋아요";
+            localStorage.removeItem("liked");
+        } else {
+            likes++;
+            document.getElementById("likes").textContent = likes; // 좋아요 추가 시 좋아요 수를 업데이트
+            likeButton.textContent = "좋아요 취소";
+            localStorage.setItem("liked", "true");
+        }
+        liked = !liked;
+        localStorage.setItem("likes", likes); // 변경된 좋아요 수를 로컬 스토리지에 저장
+    }
+
+    function reset() {
+        localStorage.setItem("likes", 0);
+        localStorage.removeItem("liked");
+        window.location.href = "like.html";
+    }
+</script>
+
+</body>
+</html>

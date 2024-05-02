@@ -1,0 +1,129 @@
+<!-- admin_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - 의견 목록</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        #opinionList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #opinionList li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        #opinionList li a {
+            color: #333;
+            text-decoration: none;
+        }
+        #opinionList li a:hover {
+            color: #0066cc;
+        }
+        .deleteButton {
+            background-color: #ff3333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            float: right;
+        }
+        .deleteButton:hover {
+            background-color: #cc0000;
+        }
+        .addOpinionButton {
+            background-color: #00cc00;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .addOpinionButton:hover {
+            background-color: #009900;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>의견 목록</h2>
+
+    <ul id="opinionList">
+        <!-- 여기에 의견 목록이 동적으로 추가될 것입니다. -->
+    </ul>
+    <button class="addOpinionButton" onclick="survey()">설문 조사</button>
+</div>
+
+<script>
+    // 로컬 스토리지에서 의견 목록을 가져와서 보여주는 함수
+    function displayOpinions() {
+        var opinions = JSON.parse(localStorage.getItem("opinions")) || [];
+        var listContainer = document.getElementById("opinionList");
+
+        // 의견 목록을 동적으로 생성하여 보여줍니다.
+        opinions.forEach(function(opinion, index) {
+            var listItem = document.createElement("li");
+            listItem.innerHTML = "<a href='admin_view.html' onclick='showOpinion(\"" + opinion.title + "\", \"" + opinion.studentId + "\", \"" + opinion.content + "\", \"" + index + "\")'>" + opinion.title + "</a> - 작성자: " + opinion.studentId;
+            
+            // 삭제 버튼 생성 및 클릭 이벤트 핸들러 추가
+            var deleteButton = document.createElement("button");
+            deleteButton.textContent = "삭제";
+            deleteButton.className = "deleteButton";
+            deleteButton.onclick = function() {
+                deleteOpinion(index); // 해당 인덱스의 의견을 삭제
+            };
+            
+            listItem.appendChild(deleteButton);
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    // 의견을 삭제하는 함수
+    function deleteOpinion(index) {
+        var opinions = JSON.parse(localStorage.getItem("opinions")) || [];
+        opinions.splice(index, 1); // 해당 인덱스의 의견 삭제
+        localStorage.setItem("opinions", JSON.stringify(opinions)); // 변경된 목록을 다시 로컬 스토리지에 저장
+        window.location.href = "admin_list.html"
+    }
+
+    // 의견을 보기 위해 admin_view.html로 이동하고 해당 의견을 표시하는 함수
+    function showOpinion(title, studentId, content, index) {
+        localStorage.setItem("selectedOpinion", JSON.stringify({ title: title, studentId: studentId, content: content, index: index }));
+    }
+
+    // 페이지 로드 시 의견 목록을 보여줍니다.
+    window.onload = function() {
+        displayOpinions();
+    };
+
+    function survey() {
+        window.location.href = "admin_surveylist.html";
+    }
+</script>
+
+</body>
+</html>

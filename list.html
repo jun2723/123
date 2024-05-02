@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의견 목록</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        #opinionList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #opinionList li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .opinionItem {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .opinionItem a {
+            color: #333;
+            text-decoration: none;
+        }
+        .opinionItem a:hover {
+            text-decoration: underline;
+        }
+        .addOpinionButton {
+            background-color: #00cc00;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .addOpinionButton:hover {
+            background-color: #009900;
+        }
+        .heart {
+            color: red;
+            cursor: pointer;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>의견 목록</h2>
+
+    <ul id="opinionList">
+        <!-- 여기에 의견 목록이 동적으로 추가될 것입니다. -->
+    </ul>
+
+    <!-- 의견 추가 버튼 -->
+    <button class="addOpinionButton" onclick="goToWrite()">의견 추가</button>
+    <button class="addOpinionButton" onclick="survey()">설문 조사</button>
+</div>
+
+<!-- 하트 이스터 에그 -->
+<div class="heart" onclick="showLikePage()">❤️</div>
+
+<script>
+    // 로컬 스토리지에서 의견 목록을 가져와서 보여주는 함수
+    function displayOpinions() {
+        var opinions = JSON.parse(localStorage.getItem("opinions")) || [];
+        var listContainer = document.getElementById("opinionList");
+
+        // 의견 목록을 동적으로 생성하여 보여줍니다.
+        opinions.forEach(function(opinion) {
+            var listItem = document.createElement("li");
+            listItem.className = "opinionItem";
+            listItem.innerHTML = "<a href='view.html' onclick='showOpinion(\"" + opinion.title + "\", \"" + opinion.studentId + "\", \"" + opinion.content + "\")'>" + opinion.title + "</a> - 작성자: " + opinion.studentId;
+            
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    // 의견을 보기 위해 view.html로 이동하고 해당 의견을 표시하는 함수
+    function showOpinion(title, studentId, content) {
+        localStorage.setItem("selectedOpinion", JSON.stringify({ title: title, studentId: studentId, content: content }));
+    }
+
+    // 페이지 로드 시 의견 목록을 보여줍니다.
+    window.onload = function() {
+        displayOpinions();
+    };
+
+    // write.html 페이지로 이동하는 함수
+    function goToWrite() {
+        window.location.href = "write.html";
+    }
+
+    // 좋아요 페이지로 이동하는 함수
+    function showLikePage() {
+        window.location.href = "like.html";
+    }
+
+    function survey() {
+        window.location.href = "surveylist.html";
+    } 
+</script>
+
+</body>
+</html>

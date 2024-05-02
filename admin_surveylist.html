@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Survey List</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        #surveyList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #surveyList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .surveyTitle {
+            flex: 1;
+        }
+        .surveyItem a {
+            color: #333;
+            text-decoration: none;
+        }
+        .surveyItem a:hover {
+            text-decoration: underline;
+        }
+        .addSurveyButton {
+            background-color: #00cc00;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .addSurveyButton:hover {
+            background-color: #009900;
+        }
+        .addOpinionButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .addOpinionButton:hover {
+            background-color: #0056b3;
+        }
+        .deleteButton {
+            background-color: #ff3333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .deleteButton:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>설문조사 목록</h2>
+
+    <ul id="surveyList">
+        <!-- 여기에 설문조사 목록이 동적으로 추가될 것입니다. -->
+    </ul>
+
+    <!-- 설문조사 추가 버튼 -->
+    <button class="addSurveyButton" onclick="goToSurveyForm()">설문조사 추가</button>
+    <button class="addOpinionButton" onclick="index()">게시판으로 이동</button>
+</div>
+
+<script>
+    // 로컬 스토리지에서 설문조사 목록을 가져와서 보여주는 함수
+    function displaySurveys() {
+        var surveys = JSON.parse(localStorage.getItem("surveys")) || [];
+        var listContainer = document.getElementById("surveyList");
+
+        // 설문조사 목록을 동적으로 생성하여 보여줍니다.
+        surveys.forEach(function(survey) {
+            var listItem = document.createElement("li");
+            listItem.className = "surveyItem";
+            listItem.innerHTML = "<span class='surveyTitle'><a href='surveyview.html' onclick='showSurvey(\"" + survey.title + "\", \"" + survey.content + "\")'>" + survey.title + "</a></span>" +
+                                  "<button class='deleteButton' onclick='deleteSurvey(\"" + survey.title + "\")'>삭제</button>";
+            
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    // 설문조사를 보기 위해 surveyview.html로 이동하고 해당 설문조사를 표시하는 함수
+    function showSurvey(title, content) {
+        localStorage.setItem("selectedSurvey", JSON.stringify({ title: title, content: content }));
+    }
+
+    // 설문조사 삭제 함수
+    function deleteSurvey(title) {
+        var surveys = JSON.parse(localStorage.getItem("surveys")) || [];
+        var updatedSurveys = surveys.filter(function(survey) {
+            return survey.title !== title;
+        });
+        localStorage.setItem("surveys", JSON.stringify(updatedSurveys));
+        location.reload(); // 페이지 새로고침하여 변경된 목록을 표시
+    }
+
+    // 페이지 로드 시 설문조사 목록을 보여줍니다.
+    window.onload = function() {
+        displaySurveys();
+    };
+
+    // survey.html 페이지로 이동하는 함수
+    function goToSurveyForm() {
+        window.location.href = "admin_survey.html";
+    }
+
+    function index() {
+        window.location.href = "admin_list.html";
+    } 
+</script>
+
+</body>
+</html>

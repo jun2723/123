@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 의견</title>
+</head>
+<body>
+    <h1>학생 의견</h1>
+    <form id="opinionForm">
+        <label for="name">제목:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="opinion">의견:</label><br>
+        <textarea id="opinion" name="opinion"></textarea><br>
+        <button type="submit">의견 제출</button>
+    </form>
+    <h2>최근 의견:</h2>
+    <ul id="opinionList">
+        <!-- 의견들이 여기에 동적으로 추가될 것입니다. -->
+    </ul>
+
+    <script src="student_opinions.js"></script>
+</body>
+</html>

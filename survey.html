@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>설문조사 응답</h2>
+    <p id="content"></p>
+    <textarea id="response" name="response" placeholder="설문조사 내용을 작성하세요..." required></textarea>
+    <button id="submitBtn">제출하기</button> <!-- 버튼에 ID 추가 -->
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 페이지 로드 시 선택한 설문의 내용을 표시
+        var selectedSurvey = JSON.parse(localStorage.getItem("selectedSurvey"));
+        document.getElementById("content").innerText = selectedSurvey.content;
+        var content = JSON.parse(localStorage.getItem("content"));
+
+        // 제출 버튼에 클릭 이벤트 리스너 추가
+        document.getElementById("submitBtn").addEventListener("click", saveResponse);
+    });
+
+    // 설문조사 응답을 저장하는 함수
+    function saveResponse() {
+        var response = document.getElementById("response").value;
+        var selectedSurvey = JSON.parse(localStorage.getItem("selectedSurvey"));
+
+        // 새로운 설문조사 응답 객체 생성
+        var newResponse = {
+            surveyTitle: selectedSurvey.title,
+            response: response
+        };
+
+        // 로컬 스토리지에서 기존 설문조사 응답을 가져오기
+        var responses = JSON.parse(localStorage.getItem("responses")) || [];
+
+        // 새로운 설문조사 응답을 목록에 추가
+        responses.push(newResponse);
+
+        // 업데이트된 설문조사 응답 목록을 로컬 스토리지에 저장
+        localStorage.setItem("responses", JSON.stringify(responses));
+
+        // 설문조사 응답 확인 페이지로 이동
+        window.location.href = "surveylist.html";
+    }
+</script>
+
+</body>
+</html>

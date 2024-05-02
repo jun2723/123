@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Survey</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>설문조사 추가</h2>
+    <form id="surveyForm" onsubmit="saveSurvey(event)">
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="content">내용:</label>
+        <textarea id="content" name="content" required></textarea>
+        
+        <button type="submit">추가</button>
+    </form>
+</div>
+
+<script>
+    // 설문조사를 저장하는 함수
+    function saveSurvey(event) {
+        event.preventDefault(); // 기본 동작 중단
+
+        var title = document.getElementById("title").value;
+        var content = document.getElementById("content").value;
+
+        // 새로운 설문조사 객체 생성
+        var newSurvey = {
+            title: title,
+            content: content
+        };
+
+        // 확인 메시지 표시
+        if (confirm("이 설문을 추가하시겠습니까?")) {
+            // 로컬 스토리지에서 기존 설문조사 목록을 가져오기
+            var surveys = JSON.parse(localStorage.getItem("surveys")) || [];
+
+            // 새로운 설문조사를 목록에 추가
+            surveys.push(newSurvey);
+
+            // 업데이트된 설문조사 목록을 로컬 스토리지에 저장
+            localStorage.setItem("surveys", JSON.stringify(surveys));
+
+            // 설문조사 추가 후, surveylist.html로 이동
+            window.location.href = "admin_surveylist.html";
+        }
+    }
+</script>
+
+</body>
+</html>

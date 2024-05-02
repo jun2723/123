@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin View</title>
+    <style>
+        /* CSS 스타일링 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3, h4, h5 {
+            margin: 0;
+            padding: 0;
+        }
+        #titleOutput {
+            margin-bottom: 10px;
+        }
+        #studentIdOutput {
+            margin-bottom: 10px;
+        }
+        #contentOutput {
+            margin-bottom: 20px;
+        }
+        #commentList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #commentList li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            overflow: hidden; /* 텍스트 오버플로우 처리 */
+        }
+        .commentItem p {
+            margin: 0;
+            padding: 0;
+        }
+        .deleteButton {
+            background-color: #ff3333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            float: right;
+        }
+        .deleteButton:hover {
+            background-color: #cc0000;
+        }
+        .comment-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        #commentInput {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #commentInput:focus {
+            outline: none;
+            border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
+        }
+        #commentInput::placeholder {
+            color: #aaa; /* 플레이스홀더 색상 변경 */
+        }
+        #commentButton {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            align-self: flex-end; /* 우측 정렬 */
+            width: 120px;
+        }
+        #commentButton:hover {
+            background-color: #0056b3;
+        }
+        .goBackButton {
+            background-color: #3333ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .goBackButton:hover {
+            background-color: #0000cc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>의견 상세 보기</h2>
+    <h3 id="titleOutput"></h3>
+    <h4 id="studentIdOutput"></h4>
+    <div id="contentOutput"></div>
+        
+    <!-- 돌아가기 버튼 -->
+    <button class="goBackButton" onclick="goBack()">돌아가기</button>
+    
+    <h5>댓글</h5>
+    <!-- 댓글 입력 폼 -->
+    <div class="comment-form" id="commentForm">
+        <textarea id="commentInput" placeholder="댓글을 입력하세요..."></textarea>
+        <button id="commentButton" onclick="saveComment()">댓글 달기</button>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <ul id="commentList"></ul>
+</div>
+
+<script>
+    // 페이지 로드 시 선택된 의견을 표시하고, 댓글을 로드합니다.
+    window.onload = function() {
+        var selectedOpinion = JSON.parse(localStorage.getItem("selectedOpinion"));
+
+        if (selectedOpinion !== null) {
+            var titleOutput = document.getElementById("titleOutput");
+            titleOutput.innerText = "제목: " + selectedOpinion.title;
+
+            var studentIdOutput = document.getElementById("studentIdOutput");
+            studentIdOutput.innerText = "작성자: " + selectedOpinion.studentId;
+
+            var contentOutput = document.getElementById("contentOutput");
+            contentOutput.innerHTML = "<p>" + selectedOpinion.content + "</p>";
+
+            // 댓글 목록 표시
+            showComments(selectedOpinion.title); // 선택된 의견의 제목을 전달합니다.
+        } else {
+            alert("의견이 없습니다.");
+            window.location.href = "admin_list.html"; // 의견이 없으면 목록 페이지로 이동
+        }
+    };
+
+    // 댓글 입력 폼을 토글하는 함수
+    function toggleCommentForm() {
+        var commentForm = document.getElementById('commentForm');
+        if (commentForm.style.display === 'none') {
+            commentForm.style.display = 'block';
+        } else {
+            commentForm.style.display = 'none';
+        }
+    }
+
+    // 댓글을 저장하는 함수
+    function saveComment() {
+        var commentInput = document.getElementById("commentInput").value;
+
+        // 현재 로그인한 사용자의 학번 가져오기
+        var loggedInStudentId = localStorage.getItem("studentId");
+
+        // 선택된 의견 가져오기
+        var selectedOpinion = JSON.parse(localStorage.getItem("selectedOpinion"));
+
+        // 댓글을 저장할 의견의 제목 가져오기
+        var opinionTitle = selectedOpinion.title;
+
+        // 댓글 객체 생성
+        var newComment = {
+            commenterId: loggedInStudentId,
+            commentText: commentInput,
+            opinionTitle: opinionTitle // 댓글이 달린 의견의 제목 저장
+        };
+
+        // 로컬 스토리지에서 해당 의견의 댓글 목록 가져오기
+        var comments = JSON.parse(localStorage.getItem("comments")) || {};
+
+        // 의견의 제목을 키로 사용하여 댓글 저장
+        if (!comments[opinionTitle]) {
+            comments[opinionTitle] = [];
+        }
+        comments[opinionTitle].push(newComment);
+
+        // 로컬 스토리지에 댓글 저장
+        localStorage.setItem("comments", JSON.stringify(comments));
+
+        // 댓글 저장 후 페이지 새로고침
+        showComments(opinionTitle);
+        document.getElementById("commentInput").value = ""; // 댓글 입력란 비우기
+    }
+
+    // 댓글 목록을 보여주는 함수
+    function showComments(opinionTitle) {
+        var comments = JSON.parse(localStorage.getItem("comments")) || {};
+        var commentList = document.getElementById("commentList");
+        commentList.innerHTML = "";
+
+        if (comments[opinionTitle]) {
+            comments[opinionTitle].forEach(function(comment, index) {
+                var commentItem = document.createElement("li");
+                commentItem.className = "commentItem";
+                commentItem.innerHTML = "<p><strong>작성자:</strong> " + comment.commenterId + "</p><p><strong>댓글:</strong> " + comment.commentText + "</p>";
+                
+                // 삭제 버튼 생성
+                var deleteButton = document.createElement("button");
+                deleteButton.className = "deleteButton";
+                deleteButton.textContent = "삭제";
+                deleteButton.onclick = function() {
+                    deleteComment(opinionTitle, index); // 해당 인덱스의 댓글 삭제
+                };
+                
+                commentItem.appendChild(deleteButton);
+                commentList.appendChild(commentItem);
+            });
+        }
+    }
+
+    // 댓글 삭제 함수
+    function deleteComment(opinionTitle, index) {
+        var comments = JSON.parse(localStorage.getItem("comments")) || {};
+        if (comments[opinionTitle] && comments[opinionTitle].length > index) {
+            comments[opinionTitle].splice(index, 1); // 해당 인덱스의 댓글 삭제
+            localStorage.setItem("comments", JSON.stringify(comments)); // 변경된 댓글 목록을 다시 저장
+            showComments(opinionTitle); // 변경된 댓글 목록을 다시 표시
+        }
+    }
+
+    // 뒤로 가기 버튼 클릭 시 관리자 목록 페이지로 이동
+    function goBack() {
+        window.location.href = "admin_list.html";
+    }
+</script>
+
+</body>
+</html>
