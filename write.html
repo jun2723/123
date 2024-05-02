@@ -86,12 +86,27 @@
         localStorage.setItem("opinions", JSON.stringify(opinions));
         
         // 의견 저장 후 화면 전환
-        window.location.href = "list.html";
+        window.location.href = "list.html"; // 서버에서 페이지를 이동하므로 주석 처리
+        saveOpinionToServer(titleInput, userInput); // 서버에 의견 저장 요청 보내기
     }
 
     // 취소 버튼 클릭 시 의견 목록 페이지로 이동
     function goBack() {
         window.location.href = "list.html";
+    }
+
+    // 서버에 의견 저장 요청 보내는 함수
+    function saveOpinionToServer(title, content) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "save_opinion.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // 성공적으로 저장된 경우 의견 목록 페이지로 이동
+                window.location.href = "list.html";
+            }
+        };
+        xhr.send("title=" + encodeURIComponent(title) + "&content=" + encodeURIComponent(content));
     }
 </script>
 
